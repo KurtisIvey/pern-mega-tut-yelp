@@ -6,11 +6,13 @@ const port = process.env.PORT || 3001;
 
 // retreive all
 app.get("/api/v1/restaurants", (req, res) => {
-  res.json({ status: "success", restaurant: "get all restaurants" });
+  res
+    .status(200)
+    .json({ status: "success", data: { restaurants: ["mdonalds", "wendys"] } });
 });
 // retrieve one
 app.get("/api/v1/restaurants/:id", (req, res) => {
-  res.json({ status: "success", restaurant: "get all restaurants" });
+  res.json({ id: req.params.id });
 });
 // create restaurant
 app.post("/api/v1/restaurants/:id", (req, res) => {
