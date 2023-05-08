@@ -48,7 +48,7 @@ app.post("/api/v1/restaurants", async (req, res) => {
     res.status(201).json({
       status: "success",
       results: results.rows.length,
-      data: { restaurants: results.rows },
+      data: { restaurants: results.rows[0] },
     });
   } catch (err) {
     console.log(err);
@@ -66,7 +66,7 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
     res.status(201).json({
       status: "success",
       results: results.rows.length,
-      data: { restaurants: results.rows },
+      data: { restaurants: results.rows[0] },
     });
   } catch (err) {
     console.log(err);
