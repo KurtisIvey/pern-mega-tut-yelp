@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 const port = process.env.PORT || 3001;
@@ -7,6 +8,7 @@ const db = require("./db");
 
 // middleware
 app.use(express.json());
+app.use(cors());
 // retreive all
 app.get("/api/v1/restaurants", async (req, res) => {
   try {
@@ -44,7 +46,6 @@ app.post("/api/v1/restaurants", async (req, res) => {
       "INSERT INTO restaurants (name, location, price_range) VALUES($1,$2,$3) returning *",
       [req.body.name, req.body.location, req.body.price_range]
     );
-    console.log(results);
     res.status(201).json({
       status: "success",
       results: results.rows.length,
@@ -62,7 +63,6 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
       "UPDATE restaurants SET name = $1, location = $2, price_range = $3 where id = $4 returning *",
       [req.body.name, req.body.location, req.body.price_range, req.params.id]
     );
-    console.log(results);
     res.status(201).json({
       status: "success",
       results: results.rows.length,
@@ -74,10 +74,18 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
 });
 
 // delete restaurant
-app.delete("/api/v1/restaurants/:id", (req, res) => {
-  res.status(204).json({
-    status: "success",
-  });
+app.delete("/api/v1/restaurants/:id", async (req, res) => {
+  try {
+    const results = await db.query("DELETE from restaurants where id = $1", [
+      req.params.id,
+    ]);
+    res.status(201).json({
+      status: "success",
+      message: "delete successful",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.listen(port, () => {
