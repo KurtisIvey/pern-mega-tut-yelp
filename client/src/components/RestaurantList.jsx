@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { RestaurantsContext } from "../context/RestaurantContext";
 
@@ -16,7 +17,22 @@ const RestaurantList = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const response = await RestaurantFinder.delete(`/${id}`);
+      setRestaurants(
+        restaurants.filter((restaurant) => {
+          return restaurant.id !== id;
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="list-group">
@@ -40,10 +56,20 @@ const RestaurantList = () => {
                 <td>{"$".repeat(item.price_range)}</td>
                 <td>Rating</td>
                 <td>
-                  <button className="btn btn-warning">Update</button>
+                  <Link
+                    to={`/restaurants/${item.id}/update`}
+                    className="btn btn-warning"
+                  >
+                    Update
+                  </Link>
                 </td>
                 <td>
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="btn btn-danger"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             );
